@@ -14,6 +14,13 @@ export function registerMiscCommands(program: Command, getPaths: () => LibPaths)
       console.log("Signed in as local-user (no authentication required).");
     });
 
+  const auth = program.command("auth");
+  auth
+    .command("whoami")
+    .action(() => {
+      console.log("Signed in as local-user (no authentication required).");
+    });
+
   program
     .command("update")
     .option("--offline", "skip the network version check")
@@ -30,37 +37,6 @@ export function registerMiscCommands(program: Command, getPaths: () => LibPaths)
         }
       } catch {
         // No network, or registry unreachable: silently skip, never fail.
-      }
-    });
-
-  program
-    .command("team")
-    .action(() => {
-      const p = getPaths();
-      ensureLibLayout(p);
-      const db = openDb(p);
-      const all = listItems(db);
-      const counts = new Map<string, { books: number; pages: number }>();
-      for (const it of all) {
-        let owners: string[] = [];
-        try {
-          owners = JSON.parse(it.owners_json || "[]");
-        } catch {
-          owners = [];
-        }
-        for (const owner of owners) {
-          const entry = counts.get(owner) ?? { books: 0, pages: 0 };
-          entry.books += 1;
-          entry.pages += it.page_count;
-          counts.set(owner, entry);
-        }
-      }
-      if (counts.size === 0) {
-        console.log("No owners recorded yet.");
-        return;
-      }
-      for (const [name, c] of counts) {
-        console.log(`${name} | ${c.books} book(s) | ${c.pages} page(s)`);
       }
     });
 

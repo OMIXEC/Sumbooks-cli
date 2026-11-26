@@ -9,14 +9,33 @@ export interface CatalogEntry {
   pageCount: number;
   description: string;
   sourceUrl: string;
+  category?: string;
+  tags?: string[];
 }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function defaultCatalogPath(): string {
+export function defaultCatalogPath(): string {
   // dist/catalog.js -> ../assets/default-catalog.json ; src/catalog.ts (ts-node/dev) -> ../assets likewise
   return path.join(__dirname, "..", "assets", "default-catalog.json");
+}
+
+/** Resolve the single catalog file that `marketplace publish/edit/unpublish` write to:
+ * the explicit --catalog/SUMBOOKS_CATALOG file if set, else the library's own
+ * `.sumbooks-dev/catalog.json` (never the read-only bundled catalog shipped with the tool). */
+export function catalogTargetPath(userCatalogPath: string | undefined, libraryCatalogFile: string): string {
+  return userCatalogPath || process.env.SUMBOOKS_CATALOG || libraryCatalogFile;
+}
+
+export function readCatalogFile(file: string): CatalogEntry[] {
+  if (!fs.existsSync(file)) return [];
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+export function writeCatalogFile(file: string, entries: CatalogEntry[]): void {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, JSON.stringify(entries, null, 2));
 }
 
 export function loadCatalog(userCatalogPath?: string): CatalogEntry[] {

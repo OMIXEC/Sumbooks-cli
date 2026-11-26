@@ -9,7 +9,9 @@ export interface RequestEntry {
   content: string;
   requestedBy: string;
   requestedAt: string;
-  status: "pending" | "applied";
+  status: "pending" | "applied" | "declined";
+  declineReason?: string;
+  approveNote?: string;
 }
 
 export function readRequests(p: LibPaths): RequestEntry[] {

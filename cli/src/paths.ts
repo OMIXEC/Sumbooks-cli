@@ -16,6 +16,12 @@ export interface LibPaths {
   requestsFile: string;
   configFile: string;
   booksDir: string;
+  shelvesFile: string;
+  teamFile: string;
+  bookGapsFile: string;
+  tourEventsFile: string;
+  sessionFile: string;
+  catalogFile: string;
 }
 
 export function libPaths(root: string): LibPaths {
@@ -30,6 +36,12 @@ export function libPaths(root: string): LibPaths {
     requestsFile: path.join(dataDir, "requests.json"),
     configFile: path.join(dataDir, "config.json"),
     booksDir: path.join(root, "books"),
+    shelvesFile: path.join(dataDir, "shelves.json"),
+    teamFile: path.join(dataDir, "team.json"),
+    bookGapsFile: path.join(dataDir, "book-gaps.json"),
+    tourEventsFile: path.join(dataDir, "tour-events.json"),
+    sessionFile: path.join(dataDir, "session"),
+    catalogFile: path.join(dataDir, "catalog.json"),
   };
 }
 

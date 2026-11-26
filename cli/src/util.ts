@@ -19,6 +19,16 @@ export function gitUserName(): string {
   return "local-user";
 }
 
+/** Read all of stdin as a trimmed UTF-8 string (used by `--body -` / `--reason-stdin`). */
+export function readStdin(): Promise<string> {
+  return new Promise((resolve) => {
+    let data = "";
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => (data += chunk));
+    process.stdin.on("end", () => resolve(data.trim()));
+  });
+}
+
 export function readPackageVersion(): string {
   // dist/util.js -> ../package.json
   const url = new URL("../package.json", import.meta.url);

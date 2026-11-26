@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { Command } from "commander";
 import { LibPaths, ensureLibLayout } from "../paths.js";
-import { loadCatalog } from "../catalog.js";
-import { openDb, findBySourceListingId } from "../db.js";
+import { loadCatalog, catalogTargetPath, readCatalogFile, writeCatalogFile, CatalogEntry } from "../catalog.js";
+import { openDb, findBySourceListingId, getItem } from "../db.js";
 import { importFile } from "../importer.js";
 import { gitUserName } from "../util.js";
 
@@ -106,4 +106,98 @@ export function registerMarketplaceCommands(
       console.log(`  - Use --file <path> to import a local copy, or --allow-network to fetch it directly.`);
       console.log(`no network, use --file or --allow-network`);
     });
+
+  marketplace
+    .command("publish")
+    .argument("<id>")
+    .action((id) => {
+      const p = getPaths();
+      const db = openDb(p);
+      const it = getItem(db, id);
+      if (!it) {
+        console.error(`Error: item not found: ${id}`);
+        process.exitCode = 1;
+        return;
+      }
+      const issues: string[] = [];
+      if (!it.title) issues.push(`title missing. Next: sumbooks-dev items enrich ${id} --title "<title>"`);
+      if (!it.description || it.description.trim().length < 20) {
+        issues.push(`description missing or too short. Next: sumbooks-dev items enrich ${id} --description "<a longer description>"`);
+      }
+      if (!it.author) issues.push(`author missing. Next: sumbooks-dev items enrich ${id} --author "<author>"`);
+      const tags = safeParseJsonArray(it.shelves);
+      if (tags.length === 0) issues.push(`no tag/category set. Next: sumbooks-dev items enrich ${id} --tag "<tag>"`);
+
+      if (issues.length > 0) {
+        console.error(`INCOMPLETE_METADATA: ${id} is not ready to publish:`);
+        for (const issue of issues) console.error(`  - ${issue}`);
+        process.exitCode = 1;
+        return;
+      }
+
+      const file = catalogTargetPath(getCatalogOverride(), p.catalogFile);
+      const entries = readCatalogFile(file);
+      const catalogEntry: CatalogEntry = {
+        listingId: it.id,
+        title: it.title,
+        author: it.author ?? "",
+        pageCount: it.page_count,
+        description: it.description ?? "",
+        sourceUrl: it.source_path ?? "",
+        category: tags[0],
+        tags,
+      };
+      const idx = entries.findIndex((e) => e.listingId === it.id);
+      if (idx >= 0) entries[idx] = catalogEntry;
+      else entries.push(catalogEntry);
+      writeCatalogFile(file, entries);
+      console.log(`Published ${id} to ${file}. This is an instant local publish to your own/your team's catalog — there's no legal rights-review queue; if you're adding genuinely third-party content, that's your team's own judgment to make.`);
+    });
+
+  marketplace
+    .command("edit")
+    .argument("<id>")
+    .option("--category <c>")
+    .option("--tag <t>")
+    .action((id, opts) => {
+      const p = getPaths();
+      const file = catalogTargetPath(getCatalogOverride(), p.catalogFile);
+      const entries = readCatalogFile(file);
+      const entry = entries.find((e) => e.listingId === id);
+      if (!entry) {
+        console.error(`Error: no catalog entry with listing id "${id}" in ${file}`);
+        process.exitCode = 1;
+        return;
+      }
+      if (opts.category) entry.category = opts.category;
+      if (opts.tag) entry.tags = Array.from(new Set([...(entry.tags ?? []), opts.tag]));
+      writeCatalogFile(file, entries);
+      console.log(`Updated catalog entry ${id} in ${file}.`);
+    });
+
+  marketplace
+    .command("unpublish")
+    .argument("<id>")
+    .action((id) => {
+      const p = getPaths();
+      const file = catalogTargetPath(getCatalogOverride(), p.catalogFile);
+      const entries = readCatalogFile(file);
+      const remaining = entries.filter((e) => e.listingId !== id);
+      if (remaining.length === entries.length) {
+        console.log(`No catalog entry with listing id "${id}" in ${file}.`);
+        return;
+      }
+      writeCatalogFile(file, remaining);
+      console.log(`Unpublished ${id} from ${file}. The book itself was not removed from your library.`);
+    });
+}
+
+function safeParseJsonArray(json: string | null): string[] {
+  if (!json) return [];
+  try {
+    const v = JSON.parse(json);
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
 }

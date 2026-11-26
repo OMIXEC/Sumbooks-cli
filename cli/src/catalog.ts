@@ -23,7 +23,7 @@ export function defaultCatalogPath(): string {
 
 /** Resolve the single catalog file that `marketplace publish/edit/unpublish` write to:
  * the explicit --catalog/SUMBOOKS_CATALOG file if set, else the library's own
- * `.sumbooks-dev/catalog.json` (never the read-only bundled catalog shipped with the tool). */
+ * `.sumbooks/catalog.json` (never the read-only bundled catalog shipped with the tool). */
 export function catalogTargetPath(userCatalogPath: string | undefined, libraryCatalogFile: string): string {
   return userCatalogPath || process.env.SUMBOOKS_CATALOG || libraryCatalogFile;
 }

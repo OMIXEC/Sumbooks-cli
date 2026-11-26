@@ -35,14 +35,14 @@ export function registerAccountCommands(program: Command) {
       if (!opts.yes) {
         console.log(
           existed
-            ? `Would remove ${h.agentsFile} (local setup preferences only). Your library (<library>/.sumbooks-dev/) is never touched. Re-run with --yes to actually remove it.`
+            ? `Would remove ${h.agentsFile} (local setup preferences only). Your library (<library>/.sumbooks/) is never touched. Re-run with --yes to actually remove it.`
             : `Nothing to remove: ${h.agentsFile} does not exist. Your library is never touched.`
         );
         return;
       }
       if (existed) {
         fs.rmSync(h.agentsFile);
-        console.log(`Removed ${h.agentsFile}. Your library (<library>/.sumbooks-dev/) was not touched.`);
+        console.log(`Removed ${h.agentsFile}. Your library (<library>/.sumbooks/) was not touched.`);
       } else {
         console.log(`Nothing to remove: ${h.agentsFile} does not exist.`);
       }

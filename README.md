@@ -1,4 +1,4 @@
-# sumbooks-dev
+# sumbooks
 
 A fully local, offline, open-source Claude Code plugin (with Codex and
 GitHub Copilot ports) that lets a coding agent consult your own PDF and
@@ -26,7 +26,7 @@ variants/
                          AGENTS.fragment.md)
   github-copilot/     — same, ported to Copilot (.agent.md agents, modes,
                          AGENTS.fragment.md)
-cli/                  — the `sumbooks-dev` CLI (Node/TypeScript) — see
+cli/                  — the `sumbooks` CLI (Node/TypeScript) — see
                          cli/README.md for the full command reference
 ```
 
@@ -42,7 +42,7 @@ npm install && npm run build && npm link
 ### 2. The plugin
 
 **Claude Code** — add this repo as a plugin marketplace source (reads
-`.claude-plugin/marketplace.json`), then enable the `sumbooks-dev` plugin.
+`.claude-plugin/marketplace.json`), then enable the `sumbooks` plugin.
 Or just symlink/copy this repo's root (minus `cli/`) into your plugins path —
 `SKILL.md` and `agents/` load the same way either way.
 
@@ -60,8 +60,8 @@ instructions, and pick a mode from `variants/github-copilot/modes/`.
 
 ```bash
 export SUMBOOKS_LIBRARY=/path/to/your/pdfs-and-markdown
-sumbooks-dev reindex
-sumbooks-dev items list --compact
+sumbooks reindex
+sumbooks items list --compact
 ```
 
 Then ask your agent a research question ("what do my books say about X") or
@@ -73,10 +73,10 @@ worth checking.
 ```
 your coding agent
    │
-   ├─ spawns librarian ──► sumbooks-dev items list / marketplace browse / items toc
+   ├─ spawns librarian ──► sumbooks items list / marketplace browse / items toc
    │                        picks relevant books, records a ledger hit or a gap
    │
-   └─ spawns item-reader(s) ──► sumbooks-dev items read "<id>:<pages>"
+   └─ spawns item-reader(s) ──► sumbooks items read "<id>:<pages>"
                                  cites findings back to the agent, page-numbered
 ```
 
@@ -91,7 +91,7 @@ direct write.
 ## Team use, no server required
 
 Point `SUMBOOKS_LIBRARY` at a git repo instead of a plain folder, commit the
-books plus the ledger and request files, and `sumbooks-dev reindex` after
+books plus the ledger and request files, and `sumbooks reindex` after
 each pull. See [`cli/README.md`](./cli/README.md#team-sharing-patterns) for
 this and two other sharing patterns, with their tradeoffs.
 

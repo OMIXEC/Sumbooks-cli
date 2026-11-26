@@ -1,11 +1,11 @@
-# sumbooks-dev
+# sumbooks
 
 A fully local, offline, no-auth, no-payment CLI for managing a personal or team
 library of PDF and markdown documents — built so a coding agent (Claude Code
 and friends) can look things up page by page, edit them with version safety,
 browse a local "marketplace" catalog, and keep a ledger of what was useful.
 
-Zero network calls, ever, except an explicit opt-in update check (`sumbooks-dev update`,
+Zero network calls, ever, except an explicit opt-in update check (`sumbooks update`,
 off by default) and an explicit opt-in marketplace fetch (`--allow-network`).
 No telemetry, no license checks, no accounts.
 
@@ -24,7 +24,7 @@ npm link   # or: node dist/cli.js ...
 If it were published, the intended install would be:
 
 ```bash
-npm install -g sumbooks-dev
+npm install -g sumbooks
 ```
 
 ## Storage model
@@ -35,7 +35,7 @@ with `SUMBOOKS_LIBRARY=<path>` or `--library <path>` on any command.
 ```
 <library>/
   books/                         # original source files copied in by marketplace subscribe
-  .sumbooks-dev/
+  .sumbooks/
     index.db                     # SQLite index (better-sqlite3), table `items`
     pages/<id>/<page>.txt        # one file per page, extracted at import time
     history/<id>/<version>/      # page-file snapshots, one per past version
@@ -51,10 +51,10 @@ with `SUMBOOKS_LIBRARY=<path>` or `--library <path>` on any command.
     config.json                  # optional, minimal
 ```
 
-Home-scoped storage (tool preferences, not library data), under `~/.sumbooks-dev/`:
+Home-scoped storage (tool preferences, not library data), under `~/.sumbooks/`:
 
 ```
-~/.sumbooks-dev/
+~/.sumbooks/
   agents.json              # coding-agent setup preferences (see `setup`)
   reports.json             # bug/feature reports from `report`
   declined-books.txt       # one id per line; managed directly by the calling agent via shell, not this CLI
@@ -67,8 +67,8 @@ source_listing_id`.
 
 ### What's gitignored vs. shareable
 
-`.gitignore` excludes `node_modules/`, `dist/`, `.sumbooks-dev/index.db`, and
-`.sumbooks-dev/pages/` — these are regenerable local caches. It does **not**
+`.gitignore` excludes `node_modules/`, `dist/`, `.sumbooks/index.db`, and
+`.sumbooks/pages/` — these are regenerable local caches. It does **not**
 exclude `ledger.json`, `requests.json`, or a user catalog file — those are
 meant to be committed and shared.
 
@@ -189,7 +189,7 @@ several Project Gutenberg public-domain classics) — metadata and a
   all checks pass, directly appends/updates the entry (keyed by the item's
   id as `listingId`) in the resolved catalog file and exits 0. The resolved
   file is `--catalog`/`SUMBOOKS_CATALOG` if set, else the library's own
-  `.sumbooks-dev/catalog.json` — **never** the bundled read-only
+  `.sumbooks/catalog.json` — **never** the bundled read-only
   `assets/default-catalog.json`. This is an instant local publish to your
   own/your team's catalog: there's no legal rights-review queue; if you're
   adding genuinely third-party content, that's your team's own judgment to
@@ -213,7 +213,7 @@ several Project Gutenberg public-domain classics) — metadata and a
 ### access (session tracking, local only)
 
 - `access start --intent "<text>"` — writes `{sessionId, intent, startedAt}`
-  to `.sumbooks-dev/session` and prints the session id. Best-effort: never
+  to `.sumbooks/session` and prints the session id. Best-effort: never
   fails or blocks, even if the write itself fails.
 - `access complete` — deletes that session file if present. Always succeeds.
 
@@ -225,7 +225,7 @@ several Project Gutenberg public-domain classics) — metadata and a
 
 ### shelf
 
-`.sumbooks-dev/shelves.json` holds personal/department/team shelves plus an
+`.sumbooks/shelves.json` holds personal/department/team shelves plus an
 active shelf slug.
 
 - `shelf list [--json]` / `shelf current` — list all shelves, or print the
@@ -243,7 +243,7 @@ active shelf slug.
 
 ### team
 
-`.sumbooks-dev/team.json` holds local, no-email, no-account team metadata:
+`.sumbooks/team.json` holds local, no-email, no-account team metadata:
 members, departments, and per-item access grants.
 
 - `team` (bare) — unchanged from before: scans every item's `owners` field
@@ -273,7 +273,7 @@ members, departments, and per-item access grants.
 
 ### setup (coding-agent integration preference)
 
-`~/.sumbooks-dev/agents.json` records which coding agents you've told the
+`~/.sumbooks/agents.json` records which coding agents you've told the
 tool you use — valid tokens: `claude-code`, `cursor`, `github-copilot`,
 `gemini-cli`, `codex`, `grok`.
 
@@ -287,15 +287,15 @@ tool you use — valid tokens: `claude-code`, `cursor`, `github-copilot`,
 
 ### uninstall / report
 
-- `uninstall [--yes] [--reason-stdin]` — removes `~/.sumbooks-dev/agents.json`
-  (setup preferences) only; **never** touches `<library>/.sumbooks-dev/` —
+- `uninstall [--yes] [--reason-stdin]` — removes `~/.sumbooks/agents.json`
+  (setup preferences) only; **never** touches `<library>/.sumbooks/` —
   books are the user's data, not tool config. Without `--yes`, prints what
   would be removed and exits 0. With `--reason-stdin`, reads a reason off
   stdin and appends it with a timestamp to
-  `~/.sumbooks-dev/uninstall-feedback.json` — purely local, never sent
+  `~/.sumbooks/uninstall-feedback.json` — purely local, never sent
   anywhere.
 - `report --type bug|feature --title "<t>" (--body "<b>" | --body-file <path> | --body -)` —
-  appends `{type, title, body, recordedAt}` to `~/.sumbooks-dev/reports.json`,
+  appends `{type, title, body, recordedAt}` to `~/.sumbooks/reports.json`,
   then prints a pointer to open a GitHub issue, since this is open-source.
 
 ### tour (local-only, no analytics server)
@@ -305,7 +305,7 @@ tool you use — valid tokens: `claude-code`, `cursor`, `github-copilot`,
   in the current directory, or `null`. No account/team/trial/tier fields —
   there is no account system.
 - `tour event <name> [--meta '<json>']` — appends `{name, meta, at}` to
-  `.sumbooks-dev/tour-events.json`, unless `SUMBOOKS_NO_TOUR_LOG=1` is set (a
+  `.sumbooks/tour-events.json`, unless `SUMBOOKS_NO_TOUR_LOG=1` is set (a
   no-op then). Always exits 0 — this is a purely local log, never
   transmitted anywhere.
 - `tour done` — minimal marker command; prints nothing, exits 0.
@@ -319,7 +319,7 @@ tool you use — valid tokens: `claude-code`, `cursor`, `github-copilot`,
   `fetch` against the npm registry to check for a newer version; if the
   network is unavailable it silently skips the check and never fails.
 - `reindex` — rebuilds `index.db` from `<library>/books/` (plus any
-  `.sumbooks-dev/<id>.json` sidecar metadata files, if present) and
+  `.sumbooks/<id>.json` sidecar metadata files, if present) and
   regenerates the page-text cache. Use this after a fresh `git clone` of a
   shared library, since `index.db` and the page cache are gitignored.
 
@@ -347,9 +347,9 @@ Three ways teams can share a `sumbooks/` library, in order of preference:
 1. **Shared git repo (recommended default).** Commit `books/`, `ledger.json`,
    `requests.json`, and any custom catalog file. Don't commit `index.db` or
    `pages/` — they're regenerable local caches (`.gitignore` already excludes
-   them). After `git clone` or `git pull`, run `sumbooks-dev reindex` to
+   them). After `git clone` or `git pull`, run `sumbooks reindex` to
    rebuild them. History snapshots and manifests are plain files too, so
-   `git log` on `.sumbooks-dev/history/<id>/manifest.json` doubles as an audit
+   `git log` on `.sumbooks/history/<id>/manifest.json` doubles as an audit
    trail. Conflicts on `requests.json`/`ledger.json` resolve the same way any
    JSON merge conflict does — small, append-only files, so conflicts are rare
    and easy to hand-resolve.

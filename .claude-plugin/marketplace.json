@@ -1,11 +1,11 @@
 {
-  "name": "sumbooks-dev",
+  "name": "sumbooks",
   "owner": {
-    "name": "sumbooks-dev contributors"
+    "name": "sumbooks contributors"
   },
   "plugins": [
     {
-      "name": "sumbooks-dev",
+      "name": "sumbooks",
       "source": "./",
       "description": "AI agent access to your local document library — research your own PDFs and markdown with page citations, fully offline, no account required.",
       "version": "0.1.0"

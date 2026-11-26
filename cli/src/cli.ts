@@ -15,7 +15,7 @@ import { readPackageVersion } from "./util.js";
 
 const program = new Command();
 program
-  .name("sumbooks-dev")
+  .name("sumbooks")
   .description("Local, offline CLI for managing a personal/team library of PDF and markdown documents.")
   .version(readPackageVersion(), "-V, --cli-version")
   .option("--library <path>", "library root (overrides SUMBOOKS_LIBRARY)")

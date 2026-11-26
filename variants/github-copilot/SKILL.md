@@ -1,6 +1,6 @@
 ---
-name: sumbooks-dev (GitHub Copilot adapter)
-description: Maps the sumbooks-dev librarian → reader → writer pipeline onto GitHub Copilot's native custom-agent mechanism.
+name: sumbooks (GitHub Copilot adapter)
+description: Maps the sumbooks librarian → reader → writer pipeline onto GitHub Copilot's native custom-agent mechanism.
 ---
 
 # GitHub Copilot adapter
@@ -27,6 +27,6 @@ Choose a run mode from `modes/`:
 - `modes/ask.md` — only run on an explicit research question from the user.
 
 There is no account, no sign-in, no paid tier and no server-side gating anywhere in
-this system — every book is already fully available on every call. `sumbooks-dev setup
+this system — every book is already fully available on every call. `sumbooks setup
 --enable <agent>` records a local preference only; it does not install anything into
 the target agent by itself.

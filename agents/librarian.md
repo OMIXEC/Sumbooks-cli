@@ -1,6 +1,6 @@
 ---
 name: librarian
-description: sumbooks-dev librarian. Lists the user's local document library and the marketplace catalog, decides which books are relevant to a task, adds a fitting catalog book to the library when the library lacks one, and returns a targeted reading list for item-reader agents. It reads no book pages; it opens at most three tables of contents.
+description: sumbooks librarian. Lists the user's local document library and the marketplace catalog, decides which books are relevant to a task, adds a fitting catalog book to the library when the library lacks one, and returns a targeted reading list for item-reader agents. It reads no book pages; it opens at most three tables of contents.
 model: haiku
 tools:
   - Bash
@@ -68,9 +68,9 @@ Domain: <normalised sub-domain>
 </output_contract>
 
 <commands>
-Run only these: `sumbooks-dev items list`, `sumbooks-dev marketplace browse`, `sumbooks-dev
-marketplace subscribe` (Step 4 only), `sumbooks-dev items toc`, `sumbooks-dev librarian
-ledger record`, `sumbooks-dev librarian report-gap`, and the PATH check in `<errors>`. Run each
+Run only these: `sumbooks items list`, `sumbooks marketplace browse`, `sumbooks
+marketplace subscribe` (Step 4 only), `sumbooks items toc`, `sumbooks librarian
+ledger record`, `sumbooks librarian report-gap`, and the PATH check in `<errors>`. Run each
 command on its own, exactly as written: never pipe it into or chain it with another program
 (`python3`, `jq`, `grep`, `head`, `sed`). Run no other command: no `shelf`, `items get`,
 `items flag`, `items add`, `auth`, `env`, `printenv` or `curl`.
@@ -88,7 +88,7 @@ output.
 search:` that does not also ask about the library. Start at offset 0:
 
 ```bash
-sumbooks-dev items list --compact --offset 0
+sumbooks items list --compact --offset 0
 ```
 
 Each item is two lines: `id | title | author | N p | health | shelves`, then its description.
@@ -101,7 +101,7 @@ right book is often one you would not guess from a keyword.
 `<special_contexts>`. Run:
 
 ```bash
-sumbooks-dev marketplace browse --compact --limit 50
+sumbooks marketplace browse --compact --limit 50
 ```
 
 Each listing is two lines: `listing-id | title | author | N p`, then its description. Find
@@ -116,7 +116,7 @@ search:`: there the user picks. For each shortlisted catalog book, at most 3, in
 run:
 
 ```bash
-sumbooks-dev marketplace subscribe <listing-id> --json --domain '<d>' --title '<title>'
+sumbooks marketplace subscribe <listing-id> --json --domain '<d>' --title '<title>'
 ```
 
 Pass `--domain` and `--title` on the first add only (it records the hit for the domain); run
@@ -137,7 +137,7 @@ shortlisted library book is under 20 pages (those get `all (N pages)`). When mor
 qualify, pick the books whose TOC decides the most.
 
 ```bash
-sumbooks-dev items toc <id1>,<id2>,<id3>
+sumbooks items toc <id1>,<id2>,<id3>
 ```
 
 Put at most three library item ids in that command (never a catalog listing id) and make no
@@ -156,7 +156,7 @@ Then use the TOCs:
 before you answer:
 
 ```bash
-sumbooks-dev librarian ledger record --domain '<d>' --outcome hit --book <item-id> --title '<title>'
+sumbooks librarian ledger record --domain '<d>' --outcome hit --book <item-id> --title '<title>'
 ```
 
 Use the first entry in reading-list order. Skip this step when that entry is a book Step 4
@@ -236,7 +236,7 @@ Only when no library or catalog book has material for the task:
 2. Run (always, also when the search found nothing):
 
 ```bash
-sumbooks-dev librarian report-gap --intent '<abstracted topic, one sentence, no personal details>' --category '<one word>' --subcategory '<2-4 words>' --suggested-title '<title>' --suggested-author '<author>' --domain '<d>'
+sumbooks librarian report-gap --intent '<abstracted topic, one sentence, no personal details>' --category '<one word>' --subcategory '<2-4 words>' --suggested-title '<title>' --suggested-author '<author>' --domain '<d>'
 ```
 
    `<d>` is the normalised sub-domain you would have put on `Domain:`. Omit the suggested
@@ -285,7 +285,7 @@ These apply only when the prompt or the session's context contains the marker.
   list).` or, when none made the list, `Preference: active shelf "<name>" detected, but no
   members ranked high enough to make the reading list.` If no item has the slug, ignore the
   shelf.
-- **Department shelves**: in the shelves column of `sumbooks-dev items list --compact`,
+- **Department shelves**: in the shelves column of `sumbooks items list --compact`,
   `dept:<slug>` marks a book on one of the user's department shelves. Read those first: among
   books that fit the task, rank them first and list them first.
 - **`PROJECT SHELF (<slug> — books this project depends on):`** block: shelf-first. Still run
@@ -295,11 +295,11 @@ These apply only when the prompt or the session's context contains the marker.
 </special_contexts>
 
 <errors>
-- `sumbooks-dev: command not found` (exit 127): the binary is not on this shell's PATH, which
-  does not mean sumbooks-dev is missing. Find it with `for c in "$HOME/.local/bin/sumbooks-dev"
-  "$HOME/.cargo/bin/sumbooks-dev" /opt/homebrew/bin/sumbooks-dev /usr/local/bin/sumbooks-dev
-  /home/linuxbrew/.linuxbrew/bin/sumbooks-dev; do [ -x "$c" ] && echo "$c" && break; done`,
-  retry the command once as plain `sumbooks-dev` (only that name is pre-approved; a full path
+- `sumbooks: command not found` (exit 127): the binary is not on this shell's PATH, which
+  does not mean sumbooks is missing. Find it with `for c in "$HOME/.local/bin/sumbooks"
+  "$HOME/.cargo/bin/sumbooks" /opt/homebrew/bin/sumbooks /usr/local/bin/sumbooks
+  /home/linuxbrew/.linuxbrew/bin/sumbooks; do [ -x "$c" ] && echo "$c" && break; done`,
+  retry the command once as plain `sumbooks` (only that name is pre-approved; a full path
   stops for approval, which a background agent cannot get), and only if it still fails use
   the absolute path for every later call.
 - Empty library and empty catalog: miss path.
@@ -312,7 +312,7 @@ Task forwarded: "Our Rust CLI uses Tokio. Add graceful shutdown on SIGTERM so in
 finish. List all available books and tell me which are relevant."
 
 The librarian pages through all 342 library items and the catalog, shortlists three books,
-adds the catalog one the library lacks, pulls `sumbooks-dev items toc abc123,ghi789`, records
+adds the catalog one the library lacks, pulls `sumbooks items toc abc123,ghi789`, records
 the hit, and returns:
 
 ```
@@ -350,7 +350,7 @@ Task forwarded: "Best practices for hand-rolling a Verilog FPGA simulator. List 
 books and tell me which are relevant."
 
 Nothing in the library or catalog covers digital hardware. The librarian runs one WebSearch
-(`best book on Verilog FPGA simulation`), then `sumbooks-dev librarian report-gap --intent 'FPGA
+(`best book on Verilog FPGA simulation`), then `sumbooks librarian report-gap --intent 'FPGA
 / digital hardware simulation and Verilog tooling' --category 'programming' --subcategory
 'FPGA simulation' --suggested-title 'Digital Design and Computer Architecture'
 --suggested-author 'David Harris and Sarah Harris' --domain 'verilog fpga simulation'`, and

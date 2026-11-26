@@ -1,6 +1,6 @@
 ---
-name: sumbooks-dev (Codex adapter)
-description: Maps the sumbooks-dev librarian → reader → writer pipeline onto Codex's native agent-config mechanism.
+name: sumbooks (Codex adapter)
+description: Maps the sumbooks librarian → reader → writer pipeline onto Codex's native agent-config mechanism.
 ---
 
 # Codex adapter
@@ -32,6 +32,6 @@ Most projects should start with `smart` — it's the same default used in `SKILL
 Auto Mode section.
 
 There is no account, no sign-in, no paid tier and no server-side gating anywhere in
-this system — every book is already fully available on every call. `sumbooks-dev setup
+this system — every book is already fully available on every call. `sumbooks setup
 --enable <agent>` records a local preference only; it does not install anything into
 the target agent by itself.

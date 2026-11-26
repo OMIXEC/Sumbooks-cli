@@ -1,5 +1,5 @@
 {
-  "name": "sumbooks-dev",
+  "name": "sumbooks",
   "version": "0.1.0",
   "description": "AI agent access to your local document library — research your own PDFs and markdown with page citations, fully offline, no account required.",
   "author": {

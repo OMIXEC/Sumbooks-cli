@@ -120,13 +120,13 @@ export function registerMarketplaceCommands(
         return;
       }
       const issues: string[] = [];
-      if (!it.title) issues.push(`title missing. Next: sumbooks-dev items enrich ${id} --title "<title>"`);
+      if (!it.title) issues.push(`title missing. Next: sumbooks items enrich ${id} --title "<title>"`);
       if (!it.description || it.description.trim().length < 20) {
-        issues.push(`description missing or too short. Next: sumbooks-dev items enrich ${id} --description "<a longer description>"`);
+        issues.push(`description missing or too short. Next: sumbooks items enrich ${id} --description "<a longer description>"`);
       }
-      if (!it.author) issues.push(`author missing. Next: sumbooks-dev items enrich ${id} --author "<author>"`);
+      if (!it.author) issues.push(`author missing. Next: sumbooks items enrich ${id} --author "<author>"`);
       const tags = safeParseJsonArray(it.shelves);
-      if (tags.length === 0) issues.push(`no tag/category set. Next: sumbooks-dev items enrich ${id} --tag "<tag>"`);
+      if (tags.length === 0) issues.push(`no tag/category set. Next: sumbooks items enrich ${id} --tag "<tag>"`);
 
       if (issues.length > 0) {
         console.error(`INCOMPLETE_METADATA: ${id} is not ready to publish:`);

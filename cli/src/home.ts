@@ -10,9 +10,9 @@ export interface HomePaths {
   uninstallFeedbackFile: string;
 }
 
-/** Home-scoped storage: `~/.sumbooks-dev/*`, for tool-level (not library) preferences and local-only logs. */
+/** Home-scoped storage: `~/.sumbooks/*`, for tool-level (not library) preferences and local-only logs. */
 export function homePaths(): HomePaths {
-  const dir = path.join(os.homedir(), ".sumbooks-dev");
+  const dir = path.join(os.homedir(), ".sumbooks");
   return {
     dir,
     agentsFile: path.join(dir, "agents.json"),

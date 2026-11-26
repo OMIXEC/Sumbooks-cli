@@ -26,10 +26,10 @@ export function registerMiscCommands(program: Command, getPaths: () => LibPaths)
     .option("--offline", "skip the network version check")
     .action(async (opts) => {
       const version = readPackageVersion();
-      console.log(`sumbooks-dev ${version}`);
+      console.log(`sumbooks ${version}`);
       if (opts.offline || process.env.SUMBOOKS_OFFLINE === "1") return;
       try {
-        const res = await fetch("https://registry.npmjs.org/sumbooks-dev/latest");
+        const res = await fetch("https://registry.npmjs.org/sumbooks/latest");
         if (!res.ok) return;
         const data = (await res.json()) as { version?: string };
         if (data.version && data.version !== version) {

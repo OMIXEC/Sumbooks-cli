@@ -25,7 +25,7 @@ export interface LibPaths {
 }
 
 export function libPaths(root: string): LibPaths {
-  const dataDir = path.join(root, ".sumbooks-dev");
+  const dataDir = path.join(root, ".sumbooks");
   return {
     root,
     dataDir,

@@ -1,11 +1,11 @@
 {
-  "name": "sumbooks-dev",
+  "name": "sumbooks",
   "version": "0.1.0",
   "description": "Local, offline, no-auth CLI for managing a personal/team library of PDF and markdown documents, built for coding agents.",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "sumbooks-dev": "./dist/cli.js"
+    "sumbooks": "./dist/cli.js"
   },
   "files": [
     "dist",

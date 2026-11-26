@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.sumbooks-dev/index.db
+.sumbooks-dev/pages/
+*.log

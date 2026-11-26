@@ -1,0 +1,66 @@
+[
+  {
+    "listingId": "pro-git",
+    "title": "Pro Git",
+    "author": "Scott Chacon and Ben Straub",
+    "pageCount": 0,
+    "description": "Comprehensive Git book covering everything from basics to internals. Licensed CC BY-NC-SA 3.0.",
+    "sourceUrl": "https://git-scm.com/book/en/v2"
+  },
+  {
+    "listingId": "eloquent-javascript",
+    "title": "Eloquent JavaScript, 3rd edition",
+    "author": "Marijn Haverbeke",
+    "pageCount": 0,
+    "description": "A modern introduction to JavaScript, programming, and the wonders of the digital. Licensed CC BY-NC 3.0, free online.",
+    "sourceUrl": "https://eloquentjavascript.net/"
+  },
+  {
+    "listingId": "sice-of-python",
+    "title": "A Byte of Python",
+    "author": "Swaroop C H",
+    "pageCount": 0,
+    "description": "A free beginner's guide to Python programming, released under Creative Commons.",
+    "sourceUrl": "https://python.swaroopch.com/"
+  },
+  {
+    "listingId": "alice-in-wonderland",
+    "title": "Alice's Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "pageCount": 0,
+    "description": "Classic novel, in the public domain worldwide.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/11"
+  },
+  {
+    "listingId": "frankenstein",
+    "title": "Frankenstein; Or, The Modern Prometheus",
+    "author": "Mary Wollstonecraft Shelley",
+    "pageCount": 0,
+    "description": "Classic Gothic novel, in the public domain worldwide.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/84"
+  },
+  {
+    "listingId": "art-of-war",
+    "title": "The Art of War",
+    "author": "Sun Tzu (trans. Lionel Giles)",
+    "pageCount": 0,
+    "description": "Classic treatise on strategy, public domain translation.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/132"
+  },
+  {
+    "listingId": "sherlock-holmes",
+    "title": "The Adventures of Sherlock Holmes",
+    "author": "Arthur Conan Doyle",
+    "pageCount": 0,
+    "description": "Classic detective short story collection, in the public domain worldwide.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1661"
+  },
+  {
+    "listingId": "think-python",
+    "title": "Think Python, 2nd edition",
+    "author": "Allen B. Downey",
+    "pageCount": 0,
+    "description": "An introduction to Python programming aimed at beginners. Licensed CC BY-NC-SA.",
+    "sourceUrl": "https://greenteapress.com/wp/think-python-2e/"
+  }
+]

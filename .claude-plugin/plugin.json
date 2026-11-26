@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "AI agent access to your local document library — research your own PDFs and markdown with page citations, fully offline, no account required.",
   "author": {
-    "name": "<maintainer>"
+    "name": "OMIXEC"
   },
   "license": "MIT",
   "keywords": ["knowledge-base", "documents", "pdf", "markdown", "library", "research", "citations", "local", "self-hosted", "offline"],
-  "homepage": "https://github.com/<org>/sumbooks"
+  "homepage": "https://github.com/OMIXEC/Sumbooks-cli"
 }

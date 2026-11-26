@@ -14,13 +14,19 @@ agents in `../../agents/`, written in Copilot's own frontmatter conventions.
 
 The orchestration rules that don't belong inside any single agent — run the librarian
 before readers, read one angle per reader in parallel, check the ledger before
-re-running the librarian, browse before subscribing, never show raw commands to the
-user — live in `AGENTS.fragment.md`. Merge that fragment into your repository's
-`AGENTS.md` (or `.github/copilot-instructions.md`, depending on how your Copilot setup
-is configured) so it applies as standing project instructions.
+re-running the librarian, browse before subscribing, shelf and team administration,
+never show raw commands to the user — live in `AGENTS.fragment.md`. Merge that
+fragment into your repository's `AGENTS.md` (or `.github/copilot-instructions.md`,
+depending on how your Copilot setup is configured) so it applies as standing project
+instructions.
 
 Choose a run mode from `modes/`:
 
 - `modes/always.md` — run the pipeline on every non-trivial task automatically.
 - `modes/smart.md` — the ledger-based compatibility check (recommended default).
 - `modes/ask.md` — only run on an explicit research question from the user.
+
+There is no account, no sign-in, no paid tier and no server-side gating anywhere in
+this system — every book is already fully available on every call. `sumbooks-dev setup
+--enable <agent>` records a local preference only; it does not install anything into
+the target agent by itself.

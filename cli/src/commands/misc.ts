@@ -74,7 +74,7 @@ export function registerMiscCommands(program: Command, getPaths: () => LibPaths)
           owners_json: JSON.stringify(sidecar.owners ?? []),
           source_listing_id: sidecar.source_listing_id ?? null,
         };
-        upsertItem(db, item);
+        upsertItem(db, p, item);
         count += 1;
       }
       console.log(`Reindexed ${count} item(s) from ${p.booksDir}.`);

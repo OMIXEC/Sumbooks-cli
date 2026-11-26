@@ -169,7 +169,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
 
       const newVersion = it.version + 1;
       const updated: Item = { ...it, version: newVersion };
-      upsertItem(db, updated);
+      upsertItem(db, p, updated);
       appendManifest(p, id, { version: newVersion, timestamp: new Date().toISOString(), changedPages: [pageNum] });
       console.log(`Updated ${id} page ${pageNum}. New version: ${newVersion}`);
     });
@@ -215,7 +215,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
 
       const newVersion = it.version + 1;
       const updated: Item = { ...it, version: newVersion, page_count: newPageNum };
-      upsertItem(db, updated);
+      upsertItem(db, p, updated);
       appendManifest(p, id, { version: newVersion, timestamp: new Date().toISOString(), changedPages: [newPageNum] });
       console.log(`Appended page ${newPageNum} to ${id}. New version: ${newVersion}`);
     });
@@ -292,7 +292,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
       const dir = itemPagesDir(p, id);
       const pageCount = fs.readdirSync(dir).filter((f) => f.endsWith(".txt")).length;
       const newVersion = it.version + 1;
-      upsertItem(db, { ...it, version: newVersion, page_count: pageCount });
+      upsertItem(db, p, { ...it, version: newVersion, page_count: pageCount });
       appendManifest(p, id, { version: newVersion, timestamp: new Date().toISOString(), changedPages: [] });
       console.log(`Restored ${id} to content from version ${version}, as new version ${newVersion}`);
     });
@@ -318,7 +318,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
       const { pages, toc } = await extractFile(it.source_path);
       writePages(p, id, pages);
       const newVersion = it.version + 1;
-      upsertItem(db, {
+      upsertItem(db, p, {
         ...it,
         version: newVersion,
         page_count: pages.length,
@@ -346,7 +346,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
         process.exitCode = 1;
         return;
       }
-      upsertItem(db, { ...it, health: opts.health });
+      upsertItem(db, p, { ...it, health: opts.health });
       console.log(`Flagged ${id} as ${opts.health}`);
     });
 
@@ -377,7 +377,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
         if (!tags.includes(opts.tag)) tags.push(opts.tag);
         updated.shelves = JSON.stringify(tags);
       }
-      upsertItem(db, updated);
+      upsertItem(db, p, updated);
       console.log(`Enriched ${id}`);
     });
 
@@ -603,7 +603,7 @@ export function registerItemsCommands(program: Command, getPaths: () => LibPaths
       const newPageNum = existingPages.length + 1;
       fs.writeFileSync(pageFile(p, entry.bookId, newPageNum), `${entry.heading}\n${entry.content}`, "utf8");
       const newVersion = it.version + 1;
-      upsertItem(db, { ...it, version: newVersion, page_count: newPageNum });
+      upsertItem(db, p, { ...it, version: newVersion, page_count: newPageNum });
       appendManifest(p, entry.bookId, { version: newVersion, timestamp: new Date().toISOString(), changedPages: [newPageNum] });
       entry.status = "applied";
       if (opts.note) entry.approveNote = opts.note;

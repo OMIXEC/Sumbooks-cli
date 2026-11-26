@@ -30,14 +30,26 @@ export async function importFile(
   opts: ImportOptions = {}
 ): Promise<Item> {
   ensureLibLayout(p);
-  const absSource = path.resolve(filePath);
-  if (!fs.existsSync(absSource)) {
+  const rawSource = path.resolve(filePath);
+  if (!fs.existsSync(rawSource)) {
     throw new Error(`File not found: ${filePath}`);
   }
-  const { pages, toc } = await extractFile(absSource);
   const id = opts.idOverride || crypto.randomUUID().slice(0, 8);
+
+  // Every import lands a copy in <library>/books/ so `reindex` can recover it
+  // after a fresh git clone (see README "Team-sharing patterns") — not just
+  // files that already arrived there via marketplace subscribe.
+  fs.mkdirSync(p.booksDir, { recursive: true });
+  const ext = path.extname(rawSource) || ".md";
+  const destPath = path.resolve(path.join(p.booksDir, `${id}${ext}`));
+  if (destPath !== rawSource) {
+    fs.copyFileSync(rawSource, destPath);
+  }
+  const absSource = destPath;
+
+  const { pages, toc } = await extractFile(absSource);
   writePages(p, id, pages);
-  const title = opts.title || path.basename(absSource).replace(/\.(pdf|md|markdown)$/i, "");
+  const title = opts.title || path.basename(rawSource).replace(/\.(pdf|md|markdown)$/i, "");
   const item: Item = {
     id,
     title,
@@ -53,7 +65,7 @@ export async function importFile(
     owners_json: JSON.stringify(opts.owners ?? []),
     source_listing_id: opts.sourceListingId ?? null,
   };
-  upsertItem(db, item);
+  upsertItem(db, p, item);
   return item;
 }
 

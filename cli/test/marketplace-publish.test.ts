@@ -50,7 +50,7 @@ function baseItem(overrides: Partial<Item>): Item {
 describe("marketplace publish completeness checks", () => {
   it("fails and writes nothing when metadata is incomplete", async () => {
     const db = openDb(p);
-    upsertItem(db, baseItem({ id: "book1" }));
+    upsertItem(db, p, baseItem({ id: "book1" }));
 
     await run(["publish", "book1"]);
 
@@ -62,6 +62,7 @@ describe("marketplace publish completeness checks", () => {
     const db = openDb(p);
     upsertItem(
       db,
+      p,
       baseItem({
         id: "book2",
         author: "Author Name",

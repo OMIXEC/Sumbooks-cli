@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import fs from "node:fs";
+import path from "node:path";
 import { LibPaths } from "./paths.js";
 
 export interface Item {
@@ -61,7 +62,7 @@ export function listItems(db: Database.Database): Item[] {
   return db.prepare("SELECT * FROM items ORDER BY imported_at ASC").all() as Item[];
 }
 
-export function upsertItem(db: Database.Database, item: Item): void {
+export function upsertItem(db: Database.Database, p: LibPaths, item: Item): void {
   db.prepare(
     `INSERT INTO items (id, title, author, page_count, health, shelves, source_path, description, toc_json, version, imported_at, owners_json, source_listing_id)
      VALUES (@id, @title, @author, @page_count, @health, @shelves, @source_path, @description, @toc_json, @version, @imported_at, @owners_json, @source_listing_id)
@@ -72,6 +73,36 @@ export function upsertItem(db: Database.Database, item: Item): void {
        imported_at=excluded.imported_at, owners_json=excluded.owners_json,
        source_listing_id=excluded.source_listing_id`
   ).run(item);
+  writeSidecar(p, item);
+}
+
+// `reindex` rebuilds index.db from <library>/books/ alone (after a fresh git
+// clone, where index.db/pages/ are gitignored) and needs title/author/
+// description/owners/etc back — those don't live in the book file itself.
+// Every upsert writes this sidecar so reindex can restore full metadata,
+// not just page content.
+function writeSidecar(p: LibPaths, item: Item): void {
+  fs.mkdirSync(p.dataDir, { recursive: true });
+  const sidecarPath = path.join(p.dataDir, `${item.id}.json`);
+  fs.writeFileSync(
+    sidecarPath,
+    JSON.stringify(
+      {
+        title: item.title,
+        author: item.author,
+        health: item.health,
+        shelves: JSON.parse(item.shelves || "[]"),
+        description: item.description,
+        version: item.version,
+        imported_at: item.imported_at,
+        owners: JSON.parse(item.owners_json || "[]"),
+        source_listing_id: item.source_listing_id,
+      },
+      null,
+      2
+    ),
+    "utf8"
+  );
 }
 
 export function findBySourceListingId(db: Database.Database, listingId: string): Item | undefined {
